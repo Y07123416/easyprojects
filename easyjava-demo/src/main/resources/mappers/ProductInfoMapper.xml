@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.easyjava.mappers.ProductInfoMapper">
+	<!--实体映射-->
+	<resultMap id="base_result_map" type="com.easyjava.entity.po.ProductInfo">
+		<!--自增ID-->
+		<id column="id" property="id"/>
+		<!--商品名称-->
+		<result column="product_name" property="productName"/>
+		<!--颜色类型-->
+		<result column="color_type" property="colorType"/>
+		<!--创建时间-->
+		<result column="createtime" property="createtime"/>
+	</resultMap>
+
+	<!--通用查询列-->
+	<sql id="base_column_list">
+		id,product_name,color_type,createtime
+	</sql>
+
+	<!--基础查询条件-->
+	<sql id="base_query_condition">
+		<if test="query.id != null">
+			and id = #{query.id}
+		</if>
+		<if test="query.productName != null and query.productName != ''">
+			and id = #{query.productName}
+		</if>
+		<if test="query.colorType != null">
+			and id = #{query.colorType}
+		</if>
+		<if test="query.createtime != null">
+			and id = #{query.createtime}
+		</if>
+	</sql>
+
+	<!--拓展查询列-->
+	<sql id="base_query_condition_extend">
+		<if test="query.productNameFuzzy != null and query.productNameFuzzy!= ''">
+			and product_name like concat('%', #{query.productNameFuzzy}, '%')
+		</if>
+		<if test="query.createtimeStart != null and query.createtimeStart!= ''">
+			<![CDATA[ and createtime >= str_to_date(#{query.createtimeStart}, '%Y-%m-%d') ]]>
+		</if>
+		<if test="query.createtimeEnd != null and query.createtimeEnd!= ''">
+			<![CDATA[ and createtime < str_to_date(#{query.createtimeEnd}, '%Y-%m-%d'), interval -1 day]]>
+		</if>
+	</sql>
+
+	<!--拓展查询条件-->
+	<sql id="query_condition">
+		<where>
+			<include refid="base_query_condition"/>
+			<include refid="base_query_condition_extend"/>
+		</where>
+	</sql>
+
+	<!--查询列表-->
+	<select id="selectList" resultMap="base_result_map">
+		SELECT
+		<include refid="base_column_list"/>
+		FROM tb_product_info
+		<include refid="query_condition"/>
+		<if test="query.orderBy!=null">order by ${query.orderBy}</if>
+		<if test="query.simplePage!=null">limit #{query.simplePage.start},#{query.simplePage.end}</if>
+	</select>
+
+	<!--查询数量-->
+	<select id="selectCount" resultType="java.lang.Integer">
+		SELECT count(1) FROM tb_product_info
+		<include refid="query_condition"/>
+	</select>
+
+	<!--插入(匹配有值的字段)-->
+	<insert id="insert" parameterType="com.easyjava.entity.po.ProductInfo">
+		<selectKey keyProperty="bean.id" resultType="Integer" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO tb_product_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.productName != null">
+				product_name,
+			</if>
+			<if test="bean.colorType != null">
+				color_type,
+			</if>
+			<if test="bean.createtime != null">
+				createtime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.productName != null">
+				#{bean.productName},
+			</if>
+			<if test="bean.colorType != null">
+				#{bean.colorType},
+			</if>
+			<if test="bean.createtime != null">
+				#{bean.createtime},
+			</if>
+		</trim>
+	</insert>
+
+	<!--插入或更新-->
+	<insert id="insertOrUpdate" parameterType="com.easyjava.entity.po.ProductInfo">
+		INSERT INTO tb_product_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.productName != null">
+				product_name,
+			</if>
+			<if test="bean.colorType != null">
+				color_type,
+			</if>
+			<if test="bean.createtime != null">
+				createtime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.productName != null">
+				#{bean.productName},
+			</if>
+			<if test="bean.colorType != null">
+				#{bean.colorType},
+			</if>
+			<if test="bean.createtime != null">
+				#{bean.createtime},
+			</if>
+		</trim>
+		<!--主键不能被更改-->
+		on DUPLICATE key update
+
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="bean.productName != null">
+				product_name = VALUES(product_name),
+			</if>
+			<if test="bean.colorType != null">
+				color_type = VALUES(color_type),
+			</if>
+			<if test="bean.createtime != null">
+				createtime = VALUES(createtime),
+			</if>
+		</trim>
+	</insert>
+
+	<!--批量插入-->
+	<insert id="insertBatch" parameterType="com.easyjava.entity.po.ProductInfo">
+		INSERT INTO tb_product_info(product_name,color_type,createtime)values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.productName},#{item.colorType},#{item.createtime})
+		</foreach>
+	</insert>
+
+	<!--批量插入或更新-->
+	<insert id="insertOrUpdateBatch" parameterType="com.easyjava.entity.po.ProductInfo">
+		INSERT INTO tb_product_info(product_name,color_type,createtime)values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.productName},#{item.colorType},#{item.createtime})
+		</foreach>
+		on DUPLICATE key update
+		product_name = VALUES(product_name),
+		color_type = VALUES(color_type),
+		createtime = VALUES(createtime)
+	</insert>
+
+	<!--根据Id查询-->
+	<select id="selectById" resultMap="base_result_map">
+		select <include refid="base_column_list"/> from tb_product_info where id=#{id}
+	</select>
+
+	<!--根据Id删除-->
+	<delete id="deleteById">
+		delete from tb_product_info where id=#{id}
+	</delete>
+
+	<!--根据Id更新-->
+	<update id="updateById" parameterType="com.easyjava.entity.po.ProductInfo">
+		update tb_product_info
+		<set>
+			<if test ="bean.id != null">
+				id=#{bean.id},
+			</if>
+			<if test ="bean.productName != null">
+				product_name=#{bean.productName},
+			</if>
+			<if test ="bean.colorType != null">
+				color_type=#{bean.colorType},
+			</if>
+			<if test ="bean.createtime != null">
+				createtime=#{bean.createtime}
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+
+</mapper>

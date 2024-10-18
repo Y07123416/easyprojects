@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="easyjava:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/easyjava_jar</output-path>
+    <root id="archive" name="easyjava.jar">
+      <element id="module-output" name="easyjava" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.7/slf4j-api-1.7.7.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/mysql/mysql-connector-java/5.1.5/mysql-connector-java-5.1.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-simple/1.7.25/slf4j-simple-1.7.25.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/alibaba/fastjson/1.1.42/fastjson-1.1.42.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10.jar" path-in-jar="/" />
+      <element id="module-source" name="easyjava" />
+      <element id="dir-copy" path="$PROJECT_DIR$/easyjava/src/main/resources/template" />
+      <element id="file-copy" path="$PROJECT_DIR$/easyjava/src/main/resources/application.properties" />
+    </root>
+  </artifact>
+</component>
